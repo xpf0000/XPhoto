@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="XPhotoChoose" customModule="chengshi" customModuleProvider="target">
+            <connections>
+                <outlet property="bottom" destination="ByB-FR-YYd" id="i6A-MF-NNJ"/>
+                <outlet property="button1" destination="ppa-pr-cBZ" id="bss-fi-18i"/>
+                <outlet property="button2" destination="7Q6-hr-KSI" id="C7z-gU-D6B"/>
+                <outlet property="button3" destination="ymZ-RY-gnT" id="UKP-Y7-1gK"/>
+                <outlet property="chooseView" destination="hlN-dB-NBO" id="sr9-UI-Ngm"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="317" height="411"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hlN-dB-NBO">
+                    <rect key="frame" x="0.0" y="411" width="317" height="195"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ppa-pr-cBZ">
+                            <rect key="frame" x="20" y="22" width="277" height="42"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                            <state key="normal" title="拍照">
+                                <color key="titleColor" red="0.13725490200000001" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="takePhoto:" destination="-1" eventType="touchUpInside" id="TWg-Cs-uyy"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Q6-hr-KSI">
+                            <rect key="frame" x="20" y="77" width="277" height="42"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="42" id="THS-Yv-x5w"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                            <state key="normal" title="从图库选取">
+                                <color key="titleColor" red="0.13725490200000001" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="choose:" destination="-1" eventType="touchUpInside" id="SSx-YQ-E6I"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ymZ-RY-gnT">
+                            <rect key="frame" x="20" y="132" width="277" height="42"/>
+                            <color key="backgroundColor" red="0.74509803921568629" green="0.74509803921568629" blue="0.74509803921568629" alpha="1" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <state key="normal" title="取消">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="cancel:" destination="-1" eventType="touchUpInside" id="RUP-cc-gfq"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="7Q6-hr-KSI" firstAttribute="leading" secondItem="hlN-dB-NBO" secondAttribute="leading" constant="20" id="2yp-49-ULn"/>
+                        <constraint firstItem="ppa-pr-cBZ" firstAttribute="height" secondItem="7Q6-hr-KSI" secondAttribute="height" id="Bqw-aH-Jej"/>
+                        <constraint firstItem="ymZ-RY-gnT" firstAttribute="top" secondItem="7Q6-hr-KSI" secondAttribute="bottom" constant="13" id="ETh-af-AHU"/>
+                        <constraint firstAttribute="height" constant="195" id="GgU-Zn-LAx"/>
+                        <constraint firstItem="ymZ-RY-gnT" firstAttribute="width" secondItem="7Q6-hr-KSI" secondAttribute="width" id="J5E-0s-71H"/>
+                        <constraint firstItem="7Q6-hr-KSI" firstAttribute="centerY" secondItem="hlN-dB-NBO" secondAttribute="centerY" id="Pvl-mb-J9r"/>
+                        <constraint firstItem="ppa-pr-cBZ" firstAttribute="width" secondItem="7Q6-hr-KSI" secondAttribute="width" id="a0O-8S-dGr"/>
+                        <constraint firstItem="ymZ-RY-gnT" firstAttribute="height" secondItem="7Q6-hr-KSI" secondAttribute="height" id="fkq-27-lec"/>
+                        <constraint firstItem="7Q6-hr-KSI" firstAttribute="top" secondItem="ppa-pr-cBZ" secondAttribute="bottom" constant="13" id="fnH-Ts-J9G"/>
+                        <constraint firstItem="ymZ-RY-gnT" firstAttribute="centerX" secondItem="7Q6-hr-KSI" secondAttribute="centerX" id="jzz-SQ-Esd"/>
+                        <constraint firstAttribute="trailing" secondItem="7Q6-hr-KSI" secondAttribute="trailing" constant="20" id="oh3-AP-6dq"/>
+                        <constraint firstItem="ppa-pr-cBZ" firstAttribute="centerX" secondItem="7Q6-hr-KSI" secondAttribute="centerX" id="xcE-R9-ZZa"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.27450980392156865" green="0.27450980392156865" blue="0.27450980392156865" alpha="0.65000000000000002" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="hlN-dB-NBO" secondAttribute="trailing" id="BwE-d8-pSO"/>
+                <constraint firstAttribute="bottom" secondItem="hlN-dB-NBO" secondAttribute="bottom" constant="-195" id="ByB-FR-YYd"/>
+                <constraint firstItem="hlN-dB-NBO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Uxf-x7-Lkd"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="238.5" y="120.5"/>
+        </view>
+    </objects>
+</document>
