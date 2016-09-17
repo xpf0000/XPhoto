@@ -12,12 +12,11 @@ import Photos
 
 class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource {
 
+    var block:XPhotoResultBlock?
     var collect:UICollectionView!
     let tool = XPhotoToolbar()
  
     var assets:[XPhotoAssetModel] = []
-    
-    var chooseArr:[XPhotoAssetModel] = []
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "contentSize"
@@ -29,6 +28,14 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
             
             collect.removeObserver(self, forKeyPath: "contentSize")
             
+        }
+    }
+    
+    func dismiss()
+    {
+        self.dismissViewControllerAnimated(true) {
+            self.block = nil
+            XPhotoHandle.Share.clean()
         }
     }
     
@@ -65,16 +72,14 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
             self?.doChooseAll(all)
             }, cancle: { [weak self]()->Void in
                 if self == nil {return}
-                print("点击了取消 !!!!!!")
-                
+                self?.dismiss()
             }) { [weak self]()->Void in
                 if self == nil {return}
-               print("点击了确定 !!!!!!")
+                self?.block?(XPhotoHandle.Share.chooseArr)
+                self?.dismiss()
                 
         }
         
-    
-
     }
 
     
@@ -90,7 +95,7 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
         let asset = assets[indexPath.row]
         cell.asset = asset
 
-        cell.choose.selected = chooseArr.contains(asset )
+        cell.choose.selected = XPhotoHandle.Share.chooseArr.contains(asset )
         
         cell.doChoose {[weak self] (asset) ->Bool in
             if self == nil {return false}
@@ -104,17 +109,17 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
     func doChoose(asset:XPhotoAssetModel)->Bool
     {
     
-        if let index = chooseArr.indexOf(asset)
+        if let index = XPhotoHandle.Share.chooseArr.indexOf(asset)
         {
-            chooseArr.removeAtIndex(index)
+            XPhotoHandle.Share.chooseArr.removeAtIndex(index)
         }
         else
         {
-            if chooseArr.count == ViewController.maxNum{return false}
-            chooseArr.append(asset)
+            if XPhotoHandle.Share.chooseArr.count == XPhotoLibVC.maxNum{return false}
+            XPhotoHandle.Share.chooseArr.append(asset)
         }
         
-        tool.count = chooseArr.count
+        //tool.count = XPhotoHandle.Share.chooseArr.count
         
         return true
         
@@ -124,13 +129,15 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
     {
         if all
         {
-            let r = ViewController.maxNum - chooseArr.count
+            let r = XPhotoLibVC.maxNum - XPhotoHandle.Share.chooseArr.count
             var c = 0
             for asset in assets.reverse()
             {
-                if !chooseArr.contains(asset )
+                if c == r {break}
+                
+                if !XPhotoHandle.Share.chooseArr.contains(asset )
                 {
-                    chooseArr.append(asset )
+                    XPhotoHandle.Share.chooseArr.append(asset )
                     
                     for item in collect.visibleCells()
                     {
@@ -145,16 +152,16 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
                     }
                     
                     c += 1
-                    if c == r {break}
+                    
                 }
                 
             }
 
-            tool.count = chooseArr.count
+            //tool.count = XPhotoHandle.Share.chooseArr.count
         }
         else
         {
-            chooseArr.removeAll(keepCapacity: false)
+            XPhotoHandle.Share.chooseArr.removeAll(keepCapacity: false)
             
             for item in collect.visibleCells()
             {
@@ -168,8 +175,46 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
                 }
             }
             
-            tool.count = 0
+            //tool.count = 0
         }
+    }
+    
+    private lazy var  tempChooseArr:[XPhotoAssetModel]  = []
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    
+        tempChooseArr = XPhotoHandle.Share.chooseArr
+
+        let vc = XPhotoBrowse()
+        vc.assets = assets
+        vc.indexPath = indexPath
+        vc.block = block
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let b = tempChooseArr.count == XPhotoHandle.Share.chooseArr.count
+        
+        var b1 = true
+        
+        for item in XPhotoHandle.Share.chooseArr {
+            if !tempChooseArr.contains(item)
+            {
+                b1 = false
+            }
+        }
+        
+        if !b || !b1
+        {
+            collect.reloadData()
+        }
+        
+        tempChooseArr.removeAll(keepCapacity: false)
+        
+        
     }
     
 
@@ -181,8 +226,12 @@ class XPhotoChooseVC: UIViewController,UICollectionViewDelegate,UICollectionView
 
     deinit
     {
-        print("XPhotoChooseVC deinit!!!!!!!!!")
+        assets.removeAll(keepCapacity: false)
     }
+    
+    
+    
+    
     
 
 }

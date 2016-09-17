@@ -13,7 +13,7 @@ let SC = UIScreen.mainScreen().scale
 
 typealias XCameraBlock = (UIImage)->Void
 
-class XCamera: NSObject ,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
+class XCamera: UIView ,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
     
     lazy var imagePicker:UIImagePickerController = UIImagePickerController()
     weak var vc:UIViewController?
@@ -26,18 +26,26 @@ class XCamera: NSObject ,UIImagePickerControllerDelegate,UINavigationControllerD
         }
     }
     
-    override init()
-    {
-        super.init()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
         imagePicker.delegate=self
         imagePicker.sourceType=UIImagePickerControllerSourceType.Camera
         
         imagePicker.allowsEditing=false
         imagePicker.modalTransitionStyle=UIModalTransitionStyle.CoverVertical
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func CameraImage()
     {
+
+        self.vc?.view.addSubview(self)
+        
         self.vc?.presentViewController(imagePicker, animated: true) { () -> Void in
             
             //XPhotoChoose.Share().removeFromSuperview()
@@ -120,6 +128,11 @@ class XCamera: NSObject ,UIImagePickerControllerDelegate,UINavigationControllerD
         self.vc = nil
         self.block = nil
         imagePicker.delegate = nil
+        self.removeFromSuperview()
+    }
+    
+    deinit
+    {
     }
 
 

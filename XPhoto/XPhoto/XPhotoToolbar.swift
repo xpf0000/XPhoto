@@ -11,10 +11,12 @@ import UIKit
 
 class XPhotoToolbar: UIToolbar {
 
-    private let all = UIButton(type: .Custom)
+    let all = UIButton(type: .Custom)
     private let finishBtn = UIButton(type: .Custom)
-    private let cancle = UIButton(type: .Custom)
+    let cancle = UIButton(type: .Custom)
     private let num = UILabel()
+    
+    var singleChoose = false
     
     private var cancleBlock:XPhotoFinishBlock?
     private var finishBlock:XPhotoFinishBlock?
@@ -47,8 +49,8 @@ class XPhotoToolbar: UIToolbar {
     {
         
         all.frame = CGRectMake(0, 0, 28, 28)
-        all.setImage("AGIPC-Checkmark-0@2x.png".image, forState: .Normal)
-        all.setImage("AGIPC-Checkmark-1@2x.png".image, forState: .Selected)
+        all.setImage("Checkmark-0@2x.png".image, forState: .Normal)
+        all.setImage("Checkmark-1@2x.png".image, forState: .Selected)
         all.imageView?.frame = CGRectMake(0, 0, 28, 28)
         all.addTarget(self, action: #selector(click(_:)), forControlEvents: .TouchUpInside)
         let item = UIBarButtonItem(customView: all)
@@ -97,12 +99,28 @@ class XPhotoToolbar: UIToolbar {
         finishBtn.enabled = false
         
         setItems([item,space,item1,space,item2], animated: true)
+        
+        XPhotoHandle.Share.chooseChange { [weak self]()->Void in
+            if self == nil {return}
+            self?.count = XPhotoHandle.Share.chooseArr.count
+        }
+        
+        count = XPhotoHandle.Share.chooseArr.count
+        
     }
     
     func click(sender:UIButton)
     {
         if sender == all
         {
+            if singleChoose && !sender.selected
+            {
+                if XPhotoHandle.Share.chooseArr.count == XPhotoLibVC.maxNum
+                {
+                    return
+                }
+            }
+            
             sender.selected = !sender.selected
             sender.bounceAnimation(0.3)
             allChooseBlock?(sender.selected)
@@ -132,7 +150,6 @@ class XPhotoToolbar: UIToolbar {
     
     deinit
     {
-        print("XPhotoToolbar deinit!!!!!!!!!")
     }
     
 }

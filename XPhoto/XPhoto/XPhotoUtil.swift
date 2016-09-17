@@ -9,10 +9,15 @@
 import UIKit
 import AssetsLibrary
 
+typealias XPhotoResultBlock = ([XPhotoAssetModel])->Void
 typealias XPhotoChooseAssetBlock = (XPhotoAssetModel)->Bool
 typealias XPhotoImageBlock = (UIImage?)->Void
 typealias XPhotoFinishBlock = ()->Void
 typealias XPhotoAllChooseBlock = (Bool)->Void
+
+var XPhotoUseVersion7 = false
+
+
 
 extension String{
     

@@ -16,31 +16,57 @@ class XPhotoAssetModel: NSObject {
     {
         didSet
         {
-  
-            if #available(iOS 8.0, *) {
-                if let set = alasset as? PHAsset
+            if #available(iOS 8.0, *)
+            {
+                if XPhotoUseVersion7
                 {
-                    
-                    let opt = PHImageRequestOptions()
-                    
-                    PHImageManager.defaultManager().requestImageForAsset(set, targetSize: CGSizeMake((SW-25)/4.0*SC, (SW-25)/4.0*SC), contentMode: .AspectFill, options: opt, resultHandler: { [weak self](result, info) in
-                        
-                        self?.image = result
-                        
-                        })
-                    
+                    version7()
                 }
-            } else {
-               
-                if let set = alasset as? ALAsset
+                else
                 {
-                    image = UIImage(CGImage: set.aspectRatioThumbnail().takeUnretainedValue())
+                    version8()
                 }
-                
+            }
+            else
+            {
+                version7()
             }
         }
     }
     var image:UIImage?
+    
+    @available(iOS 8.0, *)
+    private func version8()
+    {
+        if let set = alasset as? PHAsset
+        {
+//偶尔会卡  cpu 飙升到200%左右  猜测为同一时间进行的任务太多  使用队列进行控制下
+            XPhotoHandle.Share.AssetQueue.addOperationWithBlock { () -> Void in
+                
+                let opt = PHImageRequestOptions()
+                opt.resizeMode = .Fast
+                PHImageManager.defaultManager().requestImageForAsset(set, targetSize: CGSizeMake((SW-25)/4.0*SC, (SW-25)/4.0*SC), contentMode: .AspectFill, options: opt, resultHandler: { [weak self](result, info) in
+                    
+                    if result != nil
+                    {
+                        self?.image = result
+                    }
+                    
+                    })
+                
+            }
+            
+        }
+    }
+    
+    private func version7()
+    {
+        if let set = alasset as? ALAsset
+        {
+            image = UIImage(CGImage: set.aspectRatioThumbnail().takeUnretainedValue())
+        }
+
+    }
     
 }
 
@@ -58,34 +84,20 @@ class XPhotoGroupModel: NSObject {
     {
         didSet
         {
-            
             if #available(iOS 8.0, *)
             {
-                if let g = group as? PHAssetCollection
+                if XPhotoUseVersion7
                 {
-                    id = g.localIdentifier
-                    let r = PHAsset.fetchKeyAssetsInAssetCollection(g, options:nil)
-                    let assett:PHAsset = r?.lastObject as! PHAsset
-                    
-                    let opt = PHImageRequestOptions()
-                    
-                    PHImageManager.defaultManager().requestImageForAsset(assett, targetSize: CGSizeMake(60.0*SC, 60.0*SC), contentMode: .AspectFill, options: opt, resultHandler: { (result, info) in
-                         self.image = result
-                    })
-                    
-                    self.title = g.localizedTitle!
+                    version7()
+                }
+                else
+                {
+                    version8()
                 }
             }
             else
             {
-                if let g = group as? ALAssetsGroup
-                {
-                    let cg = g.posterImage().takeUnretainedValue()
-                    image = UIImage(CGImage: cg)
-                    title = XPhotoHandle.getGroupName(g)
-                    id = XPhotoHandle.getGroupID(g)
-                }
-
+                version7()
             }
         }
         
@@ -101,6 +113,41 @@ class XPhotoGroupModel: NSObject {
     }
     var id = ""
     
+    @available(iOS 8.0, *)
+    private func version8()
+    {
+        if let g = group as? PHAssetCollection
+        {
+            id = g.localIdentifier
+            let r = PHAsset.fetchAssetsInAssetCollection(g, options:nil)
+            let assett:PHAsset = r.lastObject as! PHAsset
+            
+            let opt = PHImageRequestOptions()
+            opt.resizeMode = .Fast
+            PHImageManager.defaultManager().requestImageForAsset(assett, targetSize: CGSizeMake(60.0*SC, 60.0*SC), contentMode: .AspectFill, options: opt, resultHandler: { (result, info) in
+               
+                if result != nil
+                {
+                    self.image = result
+                }
+                
+            })
+            
+            self.title = g.localizedTitle!
+        }
+    }
+    
+    private func version7()
+    {
+        if let g = group as? ALAssetsGroup
+        {
+            let cg = g.posterImage().takeUnretainedValue()
+            image = UIImage(CGImage: cg)
+            title = XPhotoHandle.getGroupName(g)
+            id = XPhotoHandle.getGroupID(g)
+        }
+    }
+    
 }
 
 
@@ -108,43 +155,81 @@ class XPhotoHandle: NSObject {
     
     static let Share = XPhotoHandle()
     
+    let AssetQueue = NSOperationQueue()
+    
+    
     lazy var assetGroups:[XPhotoGroupModel] = []
     lazy var assets:[String:[XPhotoAssetModel]] = [:]
     
+    var chooseArr:[XPhotoAssetModel] = []
+    {
+        didSet
+        {
+            for item in chooseChangeblock
+            {
+                item?()
+            }
+        }
+    }
+    
     private var block:XPhotoFinishBlock?
+    private var chooseChangeblock:[XPhotoFinishBlock?] = []
+    
+    private var running = false
     
     func handleFinish(b:XPhotoFinishBlock)
     {
         self.block = b
     }
     
+    func chooseChange(b:XPhotoFinishBlock)
+    {
+        self.chooseChangeblock.append(b)
+    }
+    
     override private init() {
-        
+        //设置最大并发数
+        AssetQueue.maxConcurrentOperationCount=10
     }
     
     func clean()
     {
+        chooseArr.removeAll(keepCapacity: false)
         assetGroups.removeAll(keepCapacity: false)
         assets.removeAll(keepCapacity: false)
+        chooseChangeblock.removeAll(keepCapacity: false)
     }
     
     func handle()
     {
+        if running {return}
+        running = true
+        clean()
+        
         if #available(iOS 8.0, *) {
             
-            version8()
+            if XPhotoUseVersion7
+            {
+                self.version7()
+            }
+            else
+            {
+                self.version8()
+            }
+            
             
         } else {
             
-            version7()
+            self.version7()
             
         }
-
+        
     }
     
     @available(iOS 8.0, *)
     func version8()
     {
+
         //系统相册
         let smartAlbums = PHAssetCollection.fetchAssetCollectionsWithType(PHAssetCollectionType.SmartAlbum, subtype: PHAssetCollectionSubtype.AlbumRegular, options: nil)
         
@@ -165,6 +250,7 @@ class XPhotoHandle: NSObject {
                     assets[id] = []
                     
                     let fetchResult:PHFetchResult = PHAsset.fetchAssetsInAssetCollection(c, options: nil)
+                    
                     if fetchResult.count != 0
                     {
                         for j in 0..<fetchResult.count
@@ -186,6 +272,7 @@ class XPhotoHandle: NSObject {
         
         
         block?()
+        running = false
         
     }
     
@@ -228,9 +315,13 @@ class XPhotoHandle: NSObject {
                             }
                             else
                             {
-                                print("group遍历完毕 !!!!!!")
+                                for(key,value) in self.assets
+                                {
+                                    self.assets[key] = value.reverse()
+                                }
                                 
                                 self.block?()
+                                self.running = false
                             }
                             
                         })

@@ -15,17 +15,38 @@ import PhotosUI
 //资源库管理类
 
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class XPhotoLibVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
 
     let table = UITableView()
-    
+    var block:XPhotoResultBlock?
     static var maxNum = 9
     
     //保存照片集合
     //var assets = [ALAsset]()
     
+    func dismiss()
+    {
+        self.dismissViewControllerAnimated(true) { 
+            self.block = nil
+            XPhotoHandle.Share.clean()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "照片"
+        
+        let button=UIButton(type: UIButtonType.Custom)
+        button.frame=CGRectMake(0, 0, 21, 21);
+        button.setTitle("取消", forState: .Normal)
+        button.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        button.titleLabel?.font = UIFont.systemFontOfSize(16.0)
+        button.sizeToFit()
+        button.exclusiveTouch = true
+        button.addTarget(self, action: #selector(dismiss), forControlEvents: .TouchUpInside)
+        
+        let rightItem=UIBarButtonItem(customView: button)
+        self.navigationItem.rightBarButtonItem=rightItem;
         
         // 获取当前应用对照片的访问授权状态
         let authorizationStatus = ALAssetsLibrary.authorizationStatus()
@@ -63,8 +84,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             self?.table.reloadData()
         }
-        XPhotoHandle.Share.handle()
-    
+
         self.automaticallyAdjustsScrollViewInsets = false
         
         table.frame = CGRectMake(0, 0, SW, SH)
@@ -80,6 +100,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         self.view.addSubview(table)
         
+        if(XPhotoHandle.Share.assetGroups.count > 0)
+        {
+            let vc = XPhotoChooseVC()
+            let model = XPhotoHandle.Share.assetGroups[0]
+            vc.title = model.title
+            vc.assets = XPhotoHandle.Share.assets[model.id]!
+            vc.block = block
+            
+            self.navigationController?.pushViewController(vc, animated: false)
+        }
+
     }
     
     
@@ -136,18 +167,25 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         let model = XPhotoHandle.Share.assetGroups[indexPath.row]
         vc.title = model.title
         vc.assets = XPhotoHandle.Share.assets[model.id]!
+        vc.block = block
         
         self.navigationController?.pushViewController(vc, animated: true)
         
     }
     
-    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        XPhotoHandle.Share.chooseArr.removeAll(keepCapacity: false)
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
-        
-        
+    }
+    
+    deinit
+    {
     }
 
 

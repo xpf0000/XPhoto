@@ -50,8 +50,8 @@ class XPhotoChooseCell: UICollectionViewCell {
         contentView.addSubview(img)
         
         choose.frame = CGRectMake(cellW-26-4, cellW-26-4, 26, 26)
-        choose.setImage("AGIPC-Checkmark-0@2x.png".image, forState: .Normal)
-        choose.setImage("AGIPC-Checkmark-1@2x.png".image, forState: .Selected)
+        choose.setImage("Checkmark-0@2x.png".image, forState: .Normal)
+        choose.setImage("Checkmark-1@2x.png".image, forState: .Selected)
         choose.imageView?.frame = CGRectMake(0, 0, 26, 26)
         choose.addTarget(self, action: #selector(click(_:)), forControlEvents: .TouchUpInside)
         
@@ -70,7 +70,6 @@ class XPhotoChooseCell: UICollectionViewCell {
     
     deinit
     {
-        print("XPhotoChooseCell deinit!!!!!!!!!")
     }
     
 }
