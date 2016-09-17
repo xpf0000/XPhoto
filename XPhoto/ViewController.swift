@@ -9,28 +9,24 @@
 
 import UIKit
 import AssetsLibrary
+import Photos
+import PhotosUI
 
 //资源库管理类
-let assetsLibrary =  ALAssetsLibrary()
-var assetGroups:[ALAssetsGroup] = []
-var assets:[String:[ALAsset]] = [:]
+
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
 
     let table = UITableView()
     
+    static var maxNum = 9
     
     //保存照片集合
     //var assets = [ALAsset]()
     
-    
-    
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // 获取当前应用对照片的访问授权状态
         let authorizationStatus = ALAssetsLibrary.authorizationStatus()
         // 如果没有获取访问授权，或者访问授权状态已经被明确禁止，则显示提示语，引导用户开启授权
@@ -62,75 +58,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             return
         }
         
-        
-        assetsLibrary.enumerateGroupsWithTypes(ALAssetsGroupAll, usingBlock: { (group, stop) in
+        XPhotoHandle.Share.handleFinish { 
+            [weak self]()->Void in
             
-            print("group: \(group) | stop: \(stop)")
-            
-            
-            if(group != nil)
-            {
-                group.setAssetsFilter(ALAssetsFilter.allPhotos())
-                
-                if group.numberOfAssets() > 0
-                {
-                    assetGroups.append(group)
-                    
-                    let name = group.valueForProperty(ALAssetsGroupPropertyName)
-                    let url = group.valueForProperty(ALAssetsGroupPropertyURL)
-                    let type = group.valueForProperty(ALAssetsGroupPropertyType)
-                    let id = group.valueForProperty(ALAssetsGroupPropertyPersistentID) as! String
-                    
-                    if assets[id] == nil
-                    {
-                        assets[id] = []
-                    }
-                    
-                    print("name: \(name) | url: \(url) | type: \(type) | id: \(id)")
-                    
-                }
-                
-            }
-            else
-            {
-                if (assetGroups.count > 0) {
-                    // 把所有的相册储存完毕，可以展示相册列表
-                    
-                    self.table.reloadData()
-                    
-                    for item in assetGroups
-                    {
-                        item.enumerateAssetsWithOptions(.Reverse, usingBlock: { (result, index, stop) in
-                            
-                            if result != nil
-                            {
-                            assets[self.getGroupID(item)]?.append(result)
-                            }
-                            else
-                            {
-                                print("group遍历完毕 !!!!!!")
-                            }
-                            
-                        })
-                    }
-                    
-                    
-                    
-                    
-                } else {
-                    // 没有任何有资源的相册，输出提示
-                }
-            }
-            
-            
-            
-            
-            }) { (error) in
-                
-                print("error: \(error)")
+            self?.table.reloadData()
         }
-        
-        
+        XPhotoHandle.Share.handle()
+    
         self.automaticallyAdjustsScrollViewInsets = false
         
         table.frame = CGRectMake(0, 0, SW, SH)
@@ -146,15 +80,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         self.view.addSubview(table)
         
-        
-        
-        
     }
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return assetGroups.count
+        return XPhotoHandle.Share.assetGroups.count
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -171,23 +102,28 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             item.removeFromSuperview()
         }
         
-        let group = assetGroups[indexPath.row]
-        
-        print(group.posterImage().takeUnretainedValue())
-        
-        let cg = group.posterImage().takeUnretainedValue() 
+        let model = XPhotoHandle.Share.assetGroups[indexPath.row]
         
         let image = UIImageView()
         image.frame = CGRectMake(15, 0, 60.0, 60.0)
-        image.image = UIImage(CGImage: cg)
+        image.layer.masksToBounds = true
+        image.contentMode = .ScaleAspectFill
         cell.contentView.addSubview(image)
-        
-        
+
         let label = UILabel()
         label.frame = CGRectMake(85.0, 0, SW-85.0, 60.0)
-        label.text = getGroupName(assetGroups[indexPath.row])
-        cell.contentView.addSubview(label)
         
+        model.imageBlock { 
+            [weak self](img)->Void in
+            if self == nil {return}
+            image.image = img
+            
+        }
+        
+        image.image = model.image
+        label.text = model.title
+        
+        cell.contentView.addSubview(label)
         cell.accessoryType = .DisclosureIndicator
         
         return cell
@@ -197,30 +133,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         let vc = XPhotoChooseVC()
-        
-        let group = assetGroups[indexPath.row]
-        let id = getGroupID(group)
-        let title = getGroupName(group)
-        
-        vc.assets = assets[id]!
-        vc.title = title
+        let model = XPhotoHandle.Share.assetGroups[indexPath.row]
+        vc.title = model.title
+        vc.assets = XPhotoHandle.Share.assets[model.id]!
         
         self.navigationController?.pushViewController(vc, animated: true)
         
-        
     }
     
     
-    func getGroupID(g:ALAssetsGroup)->String
-    {
-        return g.valueForProperty(ALAssetsGroupPropertyPersistentID) as! String
-    }
     
-    func getGroupName(g:ALAssetsGroup)->String
-    {
-        return g.valueForProperty(ALAssetsGroupPropertyName) as! String
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         

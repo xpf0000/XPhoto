@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1745783D1D8B9BC4003DCB7A /* AGIPC-Checkmark-0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1745783B1D8B9BC4003DCB7A /* AGIPC-Checkmark-0@2x.png */; };
+		1745783E1D8B9BC4003DCB7A /* AGIPC-Checkmark-1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1745783C1D8B9BC4003DCB7A /* AGIPC-Checkmark-1@2x.png */; };
+		174578441D8BC3F2003DCB7A /* XPhotoUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174578431D8BC3F2003DCB7A /* XPhotoUtil.swift */; };
+		174578461D8BC4D1003DCB7A /* XPhotoToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174578451D8BC4D1003DCB7A /* XPhotoToolbar.swift */; };
+		174578481D8BCB6A003DCB7A /* XPhotoChooseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174578471D8BCB6A003DCB7A /* XPhotoChooseCell.swift */; };
+		1745784A1D8C28D6003DCB7A /* XPhotoHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174578491D8C28D6003DCB7A /* XPhotoHandle.swift */; };
 		176D97B31D8954E500CC86C9 /* UncaughtExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 176D97B21D8954E500CC86C9 /* UncaughtExceptionHandler.m */; };
 		17C4478E1D892FF700B63107 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C4478D1D892FF700B63107 /* AppDelegate.swift */; };
 		17C447901D892FF700B63107 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C4478F1D892FF700B63107 /* ViewController.swift */; };
@@ -18,6 +24,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1745783B1D8B9BC4003DCB7A /* AGIPC-Checkmark-0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AGIPC-Checkmark-0@2x.png"; sourceTree = "<group>"; };
+		1745783C1D8B9BC4003DCB7A /* AGIPC-Checkmark-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AGIPC-Checkmark-1@2x.png"; sourceTree = "<group>"; };
+		174578431D8BC3F2003DCB7A /* XPhotoUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPhotoUtil.swift; sourceTree = "<group>"; };
+		174578451D8BC4D1003DCB7A /* XPhotoToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPhotoToolbar.swift; sourceTree = "<group>"; };
+		174578471D8BCB6A003DCB7A /* XPhotoChooseCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPhotoChooseCell.swift; sourceTree = "<group>"; };
+		174578491D8C28D6003DCB7A /* XPhotoHandle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPhotoHandle.swift; sourceTree = "<group>"; };
 		176D97B11D8954E500CC86C9 /* UncaughtExceptionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UncaughtExceptionHandler.h; sourceTree = "<group>"; };
 		176D97B21D8954E500CC86C9 /* UncaughtExceptionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UncaughtExceptionHandler.m; sourceTree = "<group>"; };
 		176D97B51D8955D900CC86C9 /* XPhoto-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XPhoto-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -65,7 +77,11 @@
 				17C4479F1D89308C00B63107 /* XPhoto */,
 				17C4478D1D892FF700B63107 /* AppDelegate.swift */,
 				17C4478F1D892FF700B63107 /* ViewController.swift */,
+				174578491D8C28D6003DCB7A /* XPhotoHandle.swift */,
 				17C447D01D894C7700B63107 /* XPhotoChooseVC.swift */,
+				174578471D8BCB6A003DCB7A /* XPhotoChooseCell.swift */,
+				174578451D8BC4D1003DCB7A /* XPhotoToolbar.swift */,
+				174578431D8BC3F2003DCB7A /* XPhotoUtil.swift */,
 				176D97B11D8954E500CC86C9 /* UncaughtExceptionHandler.h */,
 				176D97B21D8954E500CC86C9 /* UncaughtExceptionHandler.m */,
 				17C447911D892FF700B63107 /* Main.storyboard */,
@@ -73,6 +89,8 @@
 				17C447961D892FF700B63107 /* LaunchScreen.storyboard */,
 				17C447991D892FF700B63107 /* Info.plist */,
 				176D97B51D8955D900CC86C9 /* XPhoto-Bridging-Header.h */,
+				1745783B1D8B9BC4003DCB7A /* AGIPC-Checkmark-0@2x.png */,
+				1745783C1D8B9BC4003DCB7A /* AGIPC-Checkmark-1@2x.png */,
 			);
 			path = XPhoto;
 			sourceTree = "<group>";
@@ -143,9 +161,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1745783D1D8B9BC4003DCB7A /* AGIPC-Checkmark-0@2x.png in Resources */,
 				17C447981D892FF700B63107 /* LaunchScreen.storyboard in Resources */,
 				17C447951D892FF700B63107 /* Assets.xcassets in Resources */,
 				17C447931D892FF700B63107 /* Main.storyboard in Resources */,
+				1745783E1D8B9BC4003DCB7A /* AGIPC-Checkmark-1@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,10 +176,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				174578461D8BC4D1003DCB7A /* XPhotoToolbar.swift in Sources */,
 				17C447901D892FF700B63107 /* ViewController.swift in Sources */,
 				176D97B31D8954E500CC86C9 /* UncaughtExceptionHandler.m in Sources */,
 				17C4478E1D892FF700B63107 /* AppDelegate.swift in Sources */,
+				174578481D8BCB6A003DCB7A /* XPhotoChooseCell.swift in Sources */,
+				174578441D8BC3F2003DCB7A /* XPhotoUtil.swift in Sources */,
 				17C447D11D894C7700B63107 /* XPhotoChooseVC.swift in Sources */,
+				1745784A1D8C28D6003DCB7A /* XPhotoHandle.swift in Sources */,
 				17C447CC1D89308C00B63107 /* XCamera.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
